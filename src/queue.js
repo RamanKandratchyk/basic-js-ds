@@ -36,7 +36,7 @@ class Queue {
     if (this.list === null) {
       this.list = node;
       return this.list;
-    }
+    };
 
     this.current = this.list;
     do {

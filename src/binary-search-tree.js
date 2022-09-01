@@ -20,37 +20,128 @@ class BinarySearchTree {
   }
 
   root() {
-    return this.list === null ? null : this.list.data;
+    return this.list === null ? null : this.list;
   }
 
-  add(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  add(data) {
+    let node = new Node(data);
+
+    if (this.list === null) {
+      this.list = node;
+      return this.list;
+    };
+
+    this.current = this.list;
+    do {
+      if (this.current.data === data) break;
+
+      if (data < this.current.data) {
+        if (this.current.left === null) {
+          this.current.left = node;
+          break;
+        } else {
+          this.current = this.current.left;
+        };
+      };
+
+      if (this.current.data < data) {
+        if (this.current.right === null) {
+          this.current.right = node;
+          break;
+        } else {
+          this.current = this.current.right;
+        };
+      };
+    } while (true);
+
+    return this.list;
   }
 
-  has(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  has(data) {
+
+    // return !!this.find(data);//!!! verify this
+
+    if (this.list === null) return false;
+
+    this.current = this.list;
+    do {
+      if (this.current.data === data) return true;
+
+      if (data < this.current.data) {
+        if (this.current.left === null) {
+          return false;
+        } else {
+          this.current = this.current.left;
+        };
+      };
+
+      if (this.current.data < data) {
+        if (this.current.right === null) {
+          return false;
+        } else {
+          this.current = this.current.right;
+        };
+      };
+    } while (true);
   }
 
-  find(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  find(data) {
+    if (this.list === null) return null;
+
+    this.current = this.list;
+    do {
+      if (this.current.data === data) return this.current;
+
+      if (data < this.current.data) {
+        if (this.current.left === null) {
+          return null;
+        } else {
+          this.current = this.current.left;
+        };
+      };
+
+      if (this.current.data < data) {
+        if (this.current.right === null) {
+          return null;
+        } else {
+          this.current = this.current.right;
+        };
+      };
+    } while (true);
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  remove(data) {
+    this.current = this.find(data);
+    if (this.current === null) return false;
+
+    // implement 3 cases here
+
   }
 
   min() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    if (this.list === null) return null;
+
+    this.current = this.list;
+    do {
+      if (this.current.left === null) {
+        return this.current.data;
+      } else {
+        this.current = this.current.left;
+      };
+    } while (true);
   }
 
   max() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    if (this.list === null) return null;
+
+    this.current = this.list;
+    do {
+      if (this.current.right === null) {
+        return this.current.data;
+      } else {
+        this.current = this.current.right;
+      };
+    } while (true);
   }
 }
 
