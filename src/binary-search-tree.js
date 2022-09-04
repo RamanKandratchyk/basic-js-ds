@@ -1,4 +1,4 @@
-const { NotImplementedError } = require('../extensions/index.js');
+const { NotImplementedError, checkForThrowingErrors } = require('../extensions/index.js');
 
 // const { Node } = require('../extensions/list-tree.js');
 
@@ -59,30 +59,30 @@ class BinarySearchTree {
 
   has(data) {
 
-    // return !!this.find(data);//!!! verify this
+    return !!this.find(data);
 
-    if (this.list === null) return false;
+    // if (this.list === null) return false;
 
-    this.current = this.list;
-    do {
-      if (this.current.data === data) return true;
+    // this.current = this.list;
+    // do {
+    //   if (this.current.data === data) return true;
 
-      if (data < this.current.data) {
-        if (this.current.left === null) {
-          return false;
-        } else {
-          this.current = this.current.left;
-        };
-      };
+    //   if (data < this.current.data) {
+    //     if (this.current.left === null) {
+    //       return false;
+    //     } else {
+    //       this.current = this.current.left;
+    //     };
+    //   };
 
-      if (this.current.data < data) {
-        if (this.current.right === null) {
-          return false;
-        } else {
-          this.current = this.current.right;
-        };
-      };
-    } while (true);
+    //   if (this.current.data < data) {
+    //     if (this.current.right === null) {
+    //       return false;
+    //     } else {
+    //       this.current = this.current.right;
+    //     };
+    //   };
+    // } while (true);
   }
 
   find(data) {
@@ -111,26 +111,65 @@ class BinarySearchTree {
   }
 
   remove(data) {
-    let currentLeft = false, currentRight = false;
+    this.currentLeft = false;
+    this.currentRight = false;
     if (this.list === null) return false;
 
     if (this.list.data === data) {
       if (this.list.left === null && this.list.right === null) this.list = null;
       if (this.list.left === null && this.list.right !== null) this.list = this.list.right;
       if (this.list.left !== null && this.list.right === null) this.list = this.list.left;
+      if (this.list.left !== null && this.list.right !== null) {
+        this.det = this.list.right.left;
+
+        if (this.det === null) {
+          this.list.right.left = this.list.left;
+          this.list = this.list.right;
+          // return this.list;
+        };
+
+        if (this.det !== null) {
+          if (this.det.left === null) {
+            this.list.right.left = this.list.right.left.right;
+            let node = new Node(this.det.data);
+            node.left = this.list.left;
+            node.right = this.list.right;
+            this.list = node;
+          };
+
+          if (this.det.left !== null) {
+            do {
+              if (this.det.left === null) {
+                break;
+              } else {
+                this.det = this.det.left;
+              };
+            } while (true);
+
+            let node = new Node(this.det.data);
+            node.left = this.list.left;
+            node.right = this.list.right;
+
+            this.remove(this.det.data);
+            this.list = node;
+          };
+        };
+      };
     };
 
     this.current = this.list;
-
     do {
+      if (this.current.data === data) break;
+
       if (data < this.current.data) {
         if (this.current.left && this.current.left.data === data) {
           this.delNode = this.current.left;
-          currentLeft = true;
+          this.currentLeft = true;
           break;
         };
 
         if (this.current.left === null) {
+          // break;
           return false;
         } else {
           this.current = this.current.left;
@@ -140,11 +179,12 @@ class BinarySearchTree {
       if (this.current.data < data) {
         if (this.current.right && this.current.right.data === data) {
           this.delNode = this.current.right;
-          currentRight = true;
+          this.currentRight = true;
           break;
         };
 
         if (this.current.right === null) {
+          // break;
           return false;
         } else {
           this.current = this.current.right;
@@ -152,33 +192,82 @@ class BinarySearchTree {
       };
     } while (true);
 
-    // if (currentLeft && this.current.left.left === null && this.current.left.right === null) this.current.left = null;
-    // if (currentRight && this.current.right.left === null && this.current.right.right === null) this.current.right = null;
 
-    // if (currentLeft && this.current.left.left && this.current.left.right === null) this.current.left = this.current.left.left;
-    // if (currentLeft && this.current.left.left === null && this.current.left.right) this.current.left = this.current.left.right;
+    // if (this.currentLeft && this.current.left.left === null && this.current.left.right === null) this.current.left = null;
+    // if (this.currentRight && this.current.right.left === null && this.current.right.right === null) this.current.right = null;
 
-    // if (currentRight && this.current.right.left && this.current.right.right === null) this.current.right = this.current.right.left;
-    // if (currentRight && this.current.right.left === null && this.current.right.right) this.current.right = this.current.right.right;
+    // if (this.currentLeft && this.current.left.left && this.current.left.right === null) this.current.left = this.current.left.left;
+    // if (this.currentLeft && this.current.left.left === null && this.current.left.right) this.current.left = this.current.left.right;
 
-    if (currentLeft && this.delNode.left === null && this.delNode.right === null) this.current.left = null;
-    if (currentRight && this.delNode.left === null && this.delNode.right === null) this.current.right = null;
+    // if (this.currentRight && this.current.right.left && this.current.right.right === null) this.current.right = this.current.right.left;
+    // if (this.currentRight && this.current.right.left === null && this.current.right.right) this.current.right = this.current.right.right;
 
-    if (currentLeft && this.delNode.left && this.delNode.right === null) this.current.left = this.delNode.left;
-    if (currentLeft && this.delNode.left === null && this.delNode.right) this.current.left = this.delNode.right;
+    if (this.currentLeft && this.delNode.left === null && this.delNode.right === null) this.current.left = null;
+    if (this.currentRight && this.delNode.left === null && this.delNode.right === null) this.current.right = null;
 
-    if (currentRight && this.delNode.left && this.delNode.right === null) this.current.right = this.delNode.left;
-    if (currentRight && this.delNode.left === null && this.delNode.right) this.current.right = this.delNode.right;
+    if (this.currentLeft && this.delNode.left && this.delNode.right === null) this.current.left = this.delNode.left;
+    if (this.currentLeft && this.delNode.left === null && this.delNode.right) this.current.left = this.delNode.right;
+
+    if (this.currentRight && this.delNode.left && this.delNode.right === null) this.current.right = this.delNode.left;
+    if (this.currentRight && this.delNode.left === null && this.delNode.right) this.current.right = this.delNode.right;
 
 
-    if (this.delNode.right.left === null) {
-      if (currentLeft) this.current.left = this.delNode.right;
-      if (currentRight) this.current.right = this.delNode.right;
+    if (this.delNode.left && this.delNode.right && this.delNode.right.left === null) {
+      if (this.currentLeft) {
+        this.current.left = this.delNode.right;
+        this.current.left.left = this.delNode.left;
+      }
+
+      if (this.currentRight) {
+        this.current.right = this.delNode.right;
+        this.current.right.left = this.delNode.left;
+      }
     };
 
 
-    this.curNode = this.delNode;
+    if (this.delNode.left && this.delNode.right && this.delNode.right.left !== null) {
+      this.curNode = this.delNode.right.left;
 
+      if (this.curNode.left === null) {
+        if (this.currentLeft) {
+          // this.current.left = this.curNode;
+          // this.current.left.left = this.delNode.left;
+          // this.current.left.right = this.delNode.right;
+          // this.curNode = null;
+        };
+
+        if (this.currentRight) {
+          // this.current.right = this.curNode;
+          // this.current.right.left = this.delNode.left;
+          // this.current.right.right = this.delNode.right;
+          // this.curNode = null;
+        };
+      } //else {
+      //   do {
+      //     if (this.curNode.left.left === null) {
+      //       break;
+      //     } else {
+      //       this.curNode = this.curNode.left;
+      //     };
+      //   } while (true);
+
+      //   if (this.currentLeft) {
+      //     this.current.left = this.curNode.left;
+      //     this.current.left.left = this.delNode.left;
+      //     this.current.left.right = this.delNode.right;
+      //     this.curNode.left = null;
+      //   };
+
+      //   if (this.currentRight) {
+      //     this.current.right = this.curNode.left;
+      //     this.current.right.left = this.delNode.left;
+      //     this.current.right.right = this.delNode.right;
+      //     this.curNode.left = null;
+      //   };
+      // };
+    };
+
+    return this.list;
   }
 
   min() {

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>User name check</title>
+</head>
+
+<body>
+  <script>
+    class Node {
+      constructor(data) {
+        this.data = data;
+        this.left = null;
+        this.right = null;
+      }
+    }
+    class BinarySearchTree {
+      constructor() {
+        this.list = null;
+      }
+
+      root() {
+        return this.list === null ? null : this.list;
+      }
+
+      add(data) {
+        let node = new Node(data);
+
+        if (this.list === null) {
+          this.list = node;
+          return this.list;
+        };
+
+        this.current = this.list;
+        do {
+          if (this.current.data === data) break;
+
+          if (data < this.current.data) {
+            if (this.current.left === null) {
+              this.current.left = node;
+              break;
+            } else {
+              this.current = this.current.left;
+            };
+          };
+
+          if (this.current.data < data) {
+            if (this.current.right === null) {
+              this.current.right = node;
+              break;
+            } else {
+              this.current = this.current.right;
+            };
+          };
+        } while (true);
+
+        return this.list;
+      }
+
+      has(data) {
+        return !!this.find(data);
+      }
+
+      find(data) {
+        if (this.list === null) return null;
+
+        this.current = this.list;
+        do {
+          if (this.current.data === data) return this.current;
+
+          if (data < this.current.data) {
+            if (this.current.left === null) {
+              return null;
+            } else {
+              this.current = this.current.left;
+            };
+          };
+
+          if (this.current.data < data) {
+            if (this.current.right === null) {
+              return null;
+            } else {
+              this.current = this.current.right;
+            };
+          };
+        } while (true);
+      }
+
+      remove(data) {
+        this.currentLeft = false;
+        this.currentRight = false;
+        if (this.list === null) return false;
+
+        if (this.list.data === data) {
+          if (this.list.left === null && this.list.right === null) this.list = null;
+          if (this.list.left === null && this.list.right !== null) this.list = this.list.right;
+          if (this.list.left !== null && this.list.right === null) this.list = this.list.left;
+          if (this.list.left !== null && this.list.right !== null) {
+            console.log('CHECK');
+            this.det = this.list.right.left;
+            console.log(this.det);
+
+            if (this.det === null) {
+              console.log('CHECK det === null');
+              this.list.right.left = this.list.left;
+              this.list = this.list.right;
+              console.log(this.list);
+              // return this.list;
+            };
+
+            if (this.det !== null) {
+              console.log('CHECK det !== null');
+              if (this.det.left === null) {
+                this.list.right.left = this.list.right.left.right;
+                console.log(this.list);
+                let node = new Node(this.det.data);
+                node.left = this.list.left;
+                node.right = this.list.right;
+                console.log(node);
+                this.list = node;
+                console.log(this.list);
+              };
+
+              if (this.det.left !== null) {
+                do {
+                  if (this.det.left === null) {
+                    break;
+                  } else {
+                    this.det = this.det.left;
+                  };
+                } while (true);
+                console.log(this.det);
+
+                let node = new Node(this.det.data);
+                node.left = this.list.left;
+                node.right = this.list.right;
+
+                this.remove(this.det.data);
+                this.list = node;
+                console.log(this.list);
+              };
+            };
+          };
+        };
+
+        this.current = this.list;
+        do {
+          if (this.current.data === data) break;
+
+          if (data < this.current.data) {
+            if (this.current.left && this.current.left.data === data) {
+              this.delNode = this.current.left;
+              this.currentLeft = true;
+              break;
+            };
+
+            if (this.current.left === null) {
+              return false;
+            } else {
+              this.current = this.current.left;
+            };
+          };
+
+          if (this.current.data < data) {
+            if (this.current.right && this.current.right.data === data) {
+              this.delNode = this.current.right;
+              this.currentRight = true;
+              break;
+            };
+
+            if (this.current.right === null) {
+              return false;
+            } else {
+              this.current = this.current.right;
+            };
+          };
+        } while (true);
+
+        if (this.currentLeft && this.delNode.left === null && this.delNode.right === null) this.current.left = null;
+        if (this.currentRight && this.delNode.left === null && this.delNode.right === null) this.current.right = null;
+
+        if (this.currentLeft && this.delNode.left && this.delNode.right === null) this.current.left = this.delNode.left;
+        if (this.currentLeft && this.delNode.left === null && this.delNode.right) this.current.left = this.delNode.right;
+
+        if (this.currentRight && this.delNode.left && this.delNode.right === null) this.current.right = this.delNode.left;
+        if (this.currentRight && this.delNode.left === null && this.delNode.right) this.current.right = this.delNode.right;
+
+
+        if (this.delNode && this.delNode.left && this.delNode.right && this.delNode.right.left === null) {
+          if (this.currentLeft) {
+            this.current.left = this.delNode.right;
+            this.current.left.left = this.delNode.left;
+          }
+
+          if (this.currentRight) {
+            this.current.right = this.delNode.right;
+            this.current.right.left = this.delNode.left;
+          }
+        };
+
+
+        // if (this.delNode.left && this.delNode.right && this.delNode.right.left !== null) {
+        //   this.curNode = this.delNode.right.left;
+
+        //   if (this.curNode.left === null) {
+        // if (this.currentLeft) {
+        // this.curNode.left = this.delNode.left;
+        // this.curNode.right = this.delNode.right;
+
+        //   this.current.left = this.curNode;
+        //   this.current.left.left = this.delNode.left;
+        //   this.current.left.right = this.delNode.right;
+        //   this.curNode = null;
+        // };
+
+        // if (this.currentRight) {
+        //   this.current.right = this.curNode;
+        //   this.current.right.left = this.delNode.left;
+        //   this.current.right.right = this.delNode.right;
+        //   this.curNode = null;
+        // };
+        // } else {
+        // do {
+        //   if (this.curNode.left.left === null) {
+        //     break;
+        //   } else {
+        //     this.curNode = this.curNode.left;
+        //   };
+        // } while (true);
+
+        // if (this.currentLeft) {
+        //   this.current.left = this.curNode.left;
+        //   this.current.left.left = this.delNode.left;
+        //   this.current.left.right = this.delNode.right;
+        //   this.curNode.left = null;
+        // };
+
+        // if (this.currentRight) {
+        //   this.current.right = this.curNode.left;
+        //   this.current.right.left = this.delNode.left;
+        //   this.current.right.right = this.delNode.right;
+        //   this.curNode.left = null;
+        // };
+        // };
+        // };
+
+        // return this.list;
+      }
+
+      min() {
+        if (this.list === null) return null;
+
+        this.current = this.list;
+        do {
+          if (this.current.left === null) {
+            return this.current.data;
+          } else {
+            this.current = this.current.left;
+          };
+        } while (true);
+      }
+
+      max() {
+        if (this.list === null) return null;
+
+        this.current = this.list;
+        do {
+          if (this.current.right === null) {
+            return this.current.data;
+          } else {
+            this.current = this.current.right;
+          };
+        } while (true);
+      }
+
+      log() {
+        console.log(this.list);
+      }
+    }
+
+    const tree = new BinarySearchTree();
+    tree.add(9);
+    tree.add(14);
+    tree.add(2);
+    tree.add(6);
+    tree.add(128);
+    tree.add(8);
+    tree.add(31);
+    tree.add(54);
+    tree.add(1);
+    tree.add(30);
+    tree.add(29);
+    tree.add(25);
+    tree.add(27);
+
+    tree.log();
+
+    tree.remove(9);
+    console.log('********************************');
+    tree.remove(14);
+    console.log('********************************');
+    // tree.remove(8);
+    console.log(tree.has(14));
+    console.log(tree.has(8));
+    console.log(tree.has(9));
+    console.log(tree.has(2));
+    console.log(tree.has(6));
+    console.log(tree.has(128));
+    console.log(tree.has(31));
+    console.log(tree.has(54));
+    console.log(tree.has(1));
+    console.log(tree.min());
+    console.log(tree.max());
+    console.log('********************************');
+    console.log(tree.has(25));
+    tree.remove(25);
+    console.log(tree.has(25));
+    console.log('********************************');
+    console.log(tree.has(27));
+    tree.remove(27);
+    console.log(tree.has(27));
+
+  </script>
+</body>
+
+</html>
