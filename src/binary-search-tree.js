@@ -230,41 +230,61 @@ class BinarySearchTree {
 
       if (this.curNode.left === null) {
         if (this.currentLeft) {
-          // this.current.left = this.curNode;
-          // this.current.left.left = this.delNode.left;
-          // this.current.left.right = this.delNode.right;
-          // this.curNode = null;
+          this.z = this.curNode.data;
+          this.remove(this.curNode.data);
+
+          let node = new Node(this.z);
+          node.left = this.delNode.left;
+          node.right = this.delNode.right;
+
+          this.current.left = node;
+          this.curNode = null;
         };
 
         if (this.currentRight) {
-          // this.current.right = this.curNode;
-          // this.current.right.left = this.delNode.left;
-          // this.current.right.right = this.delNode.right;
-          // this.curNode = null;
+          this.z = this.curNode.data;
+          this.remove(this.curNode.data);
+
+          let node = new Node(this.z);
+          node.left = this.delNode.left;
+          node.right = this.delNode.right;
+
+          this.current.right = node;
+          this.curNode = null;
         };
-      } //else {
-      //   do {
-      //     if (this.curNode.left.left === null) {
-      //       break;
-      //     } else {
-      //       this.curNode = this.curNode.left;
-      //     };
-      //   } while (true);
+      } else {
+        do {
+          if (this.curNode.left.left === null) {
+            break;
+          } else {
+            this.curNode = this.curNode.left;
+          };
+        } while (true);
 
-      //   if (this.currentLeft) {
-      //     this.current.left = this.curNode.left;
-      //     this.current.left.left = this.delNode.left;
-      //     this.current.left.right = this.delNode.right;
-      //     this.curNode.left = null;
-      //   };
+        if (this.currentLeft) {
+          this.z = this.curNode.data;
+          this.remove(this.curNode.data);
 
-      //   if (this.currentRight) {
-      //     this.current.right = this.curNode.left;
-      //     this.current.right.left = this.delNode.left;
-      //     this.current.right.right = this.delNode.right;
-      //     this.curNode.left = null;
-      //   };
-      // };
+          let node = new Node(this.z);
+          node.left = this.delNode.left;
+          node.right = this.delNode.right;
+
+          this.current.left = node;
+          this.curNode = null;
+        };
+
+        if (this.currentRight) {
+          this.z = this.curNode.data;
+          this.remove(this.curNode.data);
+
+          let node = new Node(this.z);
+          node.left = this.delNode.left;
+          node.right = this.delNode.right;
+
+          this.current.right = node;
+          this.curNode = null;
+        };
+      };
     };
 
     return this.list;
