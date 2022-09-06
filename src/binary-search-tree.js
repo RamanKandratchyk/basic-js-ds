@@ -58,31 +58,7 @@ class BinarySearchTree {
   }
 
   has(data) {
-
     return !!this.find(data);
-
-    // if (this.list === null) return false;
-
-    // this.current = this.list;
-    // do {
-    //   if (this.current.data === data) return true;
-
-    //   if (data < this.current.data) {
-    //     if (this.current.left === null) {
-    //       return false;
-    //     } else {
-    //       this.current = this.current.left;
-    //     };
-    //   };
-
-    //   if (this.current.data < data) {
-    //     if (this.current.right === null) {
-    //       return false;
-    //     } else {
-    //       this.current = this.current.right;
-    //     };
-    //   };
-    // } while (true);
   }
 
   find(data) {
@@ -110,184 +86,43 @@ class BinarySearchTree {
     } while (true);
   }
 
+  minNode(node) {
+    if (node.left === null)
+      return node;
+    else
+      return this.minNode(node.left);
+  }
+
   remove(data) {
-    this.currentLeft = false;
-    this.currentRight = false;
-    if (this.list === null) return false;
+    this.list = this.removeNode(this.list, data);
+  }
 
-    if (this.list.data === data) {
-      if (this.list.left === null && this.list.right === null) this.list = null;
-      if (this.list.left === null && this.list.right !== null) this.list = this.list.right;
-      if (this.list.left !== null && this.list.right === null) this.list = this.list.left;
-      if (this.list.left !== null && this.list.right !== null) {
-        this.det = this.list.right.left;
-
-        if (this.det === null) {
-          this.list.right.left = this.list.left;
-          this.list = this.list.right;
-          // return this.list;
-        };
-
-        if (this.det !== null) {
-          if (this.det.left === null) {
-            this.list.right.left = this.list.right.left.right;
-            let node = new Node(this.det.data);
-            node.left = this.list.left;
-            node.right = this.list.right;
-            this.list = node;
-          };
-
-          if (this.det.left !== null) {
-            do {
-              if (this.det.left === null) {
-                break;
-              } else {
-                this.det = this.det.left;
-              };
-            } while (true);
-
-            let node = new Node(this.det.data);
-            node.left = this.list.left;
-            node.right = this.list.right;
-
-            this.remove(this.det.data);
-            this.list = node;
-          };
-        };
-      };
-    };
-
-    this.current = this.list;
-    do {
-      if (this.current.data === data) break;
-
-      if (data < this.current.data) {
-        if (this.current.left && this.current.left.data === data) {
-          this.delNode = this.current.left;
-          this.currentLeft = true;
-          break;
-        };
-
-        if (this.current.left === null) {
-          // break;
-          return false;
-        } else {
-          this.current = this.current.left;
-        };
-      };
-
-      if (this.current.data < data) {
-        if (this.current.right && this.current.right.data === data) {
-          this.delNode = this.current.right;
-          this.currentRight = true;
-          break;
-        };
-
-        if (this.current.right === null) {
-          // break;
-          return false;
-        } else {
-          this.current = this.current.right;
-        };
-      };
-    } while (true);
-
-
-    // if (this.currentLeft && this.current.left.left === null && this.current.left.right === null) this.current.left = null;
-    // if (this.currentRight && this.current.right.left === null && this.current.right.right === null) this.current.right = null;
-
-    // if (this.currentLeft && this.current.left.left && this.current.left.right === null) this.current.left = this.current.left.left;
-    // if (this.currentLeft && this.current.left.left === null && this.current.left.right) this.current.left = this.current.left.right;
-
-    // if (this.currentRight && this.current.right.left && this.current.right.right === null) this.current.right = this.current.right.left;
-    // if (this.currentRight && this.current.right.left === null && this.current.right.right) this.current.right = this.current.right.right;
-
-    if (this.currentLeft && this.delNode.left === null && this.delNode.right === null) this.current.left = null;
-    if (this.currentRight && this.delNode.left === null && this.delNode.right === null) this.current.right = null;
-
-    if (this.currentLeft && this.delNode.left && this.delNode.right === null) this.current.left = this.delNode.left;
-    if (this.currentLeft && this.delNode.left === null && this.delNode.right) this.current.left = this.delNode.right;
-
-    if (this.currentRight && this.delNode.left && this.delNode.right === null) this.current.right = this.delNode.left;
-    if (this.currentRight && this.delNode.left === null && this.delNode.right) this.current.right = this.delNode.right;
-
-
-    if (this.delNode.left && this.delNode.right && this.delNode.right.left === null) {
-      if (this.currentLeft) {
-        this.current.left = this.delNode.right;
-        this.current.left.left = this.delNode.left;
+  removeNode(node, data) {
+    if (node === null) {
+      return null;
+    } else if (data < node.data) {
+      node.left = this.removeNode(node.left, data);
+      return node;
+    } else if (data > node.data) {
+      node.right = this.removeNode(node.right, data);
+      return node;
+    } else {
+      if (node.left === null && node.right === null) {
+        node = null;
+        return node;
       }
-
-      if (this.currentRight) {
-        this.current.right = this.delNode.right;
-        this.current.right.left = this.delNode.left;
+      if (node.left === null) {
+        node = node.right;
+        return node;
+      } else if (node.right === null) {
+        node = node.left;
+        return node;
       }
+      let newNode = this.minNode(node.right);
+      node.data = newNode.data;
+      node.right = this.removeNode(node.right, newNode.data);
+      return node;
     };
-
-
-    if (this.delNode.left && this.delNode.right && this.delNode.right.left !== null) {
-      this.curNode = this.delNode.right.left;
-
-      if (this.curNode.left === null) {
-        if (this.currentLeft) {
-          this.z = this.curNode.data;
-          this.remove(this.curNode.data);
-
-          let node = new Node(this.z);
-          node.left = this.delNode.left;
-          node.right = this.delNode.right;
-
-          this.current.left = node;
-          this.curNode = null;
-        };
-
-        if (this.currentRight) {
-          this.z = this.curNode.data;
-          this.remove(this.curNode.data);
-
-          let node = new Node(this.z);
-          node.left = this.delNode.left;
-          node.right = this.delNode.right;
-
-          this.current.right = node;
-          this.curNode = null;
-        };
-      } else {
-        do {
-          if (this.curNode.left.left === null) {
-            break;
-          } else {
-            this.curNode = this.curNode.left;
-          };
-        } while (true);
-
-        if (this.currentLeft) {
-          this.z = this.curNode.data;
-          this.remove(this.curNode.data);
-
-          let node = new Node(this.z);
-          node.left = this.delNode.left;
-          node.right = this.delNode.right;
-
-          this.current.left = node;
-          this.curNode = null;
-        };
-
-        if (this.currentRight) {
-          this.z = this.curNode.data;
-          this.remove(this.curNode.data);
-
-          let node = new Node(this.z);
-          node.left = this.delNode.left;
-          node.right = this.delNode.right;
-
-          this.current.right = node;
-          this.curNode = null;
-        };
-      };
-    };
-
-    return this.list;
   }
 
   min() {
